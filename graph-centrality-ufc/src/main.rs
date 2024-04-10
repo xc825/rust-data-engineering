@@ -1,6 +1,8 @@
 use petgraph::graph::{NodeIndex, UnGraph};
 use petgraph::Direction;
 use std::fmt;
+use rustworkx_core::petgraph;
+use rustworkx_core::centrality::betweenness_centrality;
 
 #[derive(Debug)]
 struct Fighter {
@@ -54,6 +56,7 @@ fn main() {
     add_edge(&mut graph, &fighter_nodes, 3, 4); // Conor McGregor vs. Nate Diaz
     add_edge(&mut graph, &fighter_nodes, 0, 4); // Dustin Poirier vs. Nate Diaz
     add_edge(&mut graph, &fighter_nodes, 2, 4); // Jose Aldo vs. Nate Diaz
+    //add_edge(&mut graph, &fighter_nodes, 2, 0); // Jose Aldo vs. Dustin Poirier
 
     for (i, &node) in fighter_nodes.iter().enumerate() {
         let name = &fighters[i].name;
@@ -78,5 +81,12 @@ fn main() {
             _ => {}
         }
         println!("-----------------");
+    }
+    let output = betweenness_centrality(&graph, false, false, 200);
+    println!("{:?}", output);
+    for i in 0..output.len() {
+        let name = &fighters[i].name;
+        let centrality = output[i].unwrap();
+        println!("Fighter: {}, Betweenness Centrality: {}", name, centrality);
     }
 }
